@@ -20,6 +20,9 @@ public class MovePlayer : MonoBehaviour
     public float jumpPower = 5f;
     public float velocityY;
 
+    int jumpCount = 0;
+    int maxJumpCount = 2;
+
     // 사용자의 입력에 따라 앞뒤좌우로 방향을 만들고 그 방향으로 이동하고 싶다.
     // - speed(속력)                 * Velocity(속도), 크기와 방향을 가지는 값.
     // - P = P0 + VT
@@ -41,25 +44,44 @@ public class MovePlayer : MonoBehaviour
 
         // 만약, 사용자가 점프 버튼을 누르면, 점프를 뛰고싶다.
         // Y속도에 점프파워를 대입하고 싶다.
-        if (Input.GetButtonDown("Jump"))
+        // 만약, 땅에 서있다.
+        // 그리고, 사용자가 점프 버튼을 누른다면,
+        // cc 로 부위별 충돌여부를 알고 싶을 때 : cc.collisionFlags & CollisionFlags.CollideBelow
+        // 조건은 왼쪽에서 부터 체크하므로 빠른 결정이 나는 조건을 제일 왼쪽으로! (뒷 부분 연산 안하도록)
+        // if (cc.isGrounded && Input.GetButtonDown("Jump"))
+        if (cc.isGrounded)
+        {
+            jumpCount = 0;
+        }
+
+        if ((jumpCount < maxJumpCount) && Input.GetButtonDown("Jump"))
         {
             velocityY = jumpPower;
+            ++jumpCount;
+            // print(jumpCount + "/" + maxJumpCount);
         }
 
         // 사용자의 입력을 받는다.
         // 앞뒤좌우로 방향을 만든다.
         // 그 방향으로 이동하고 싶다.
+
+
+        // 카메라의 좌표에서 앞뒤좌우로 이동하고 싶다.
+
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
         
         Vector3 dir = new Vector3(x, 0f, z);
+        // 카메라를 기준으로 이동하고 싶다.
+        dir = Camera.main.transform.TransformDirection(dir); // dir 을 카메라를 기준으로 바꿔준다.
+
         dir.Normalize();
         dir *= speed;
         dir.y = velocityY;
 
         cc.Move(dir * Time.deltaTime);
 
-        print($"{velocityY} / {dir.y}");
+        // print($"{velocityY} / {dir.y}");
 
         //transform.position += dir * Time.deltaTime;
 

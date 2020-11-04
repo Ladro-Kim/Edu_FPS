@@ -13,11 +13,19 @@ public class RotateCamera : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // 태어날 때 rX 와 rY 의 현재 회전정보를 대입하고 싶다.
+        rX = transform.eulerAngles.y;
+        rY = transform.eulerAngles.z;
+        
+        //Vector3 curRot = transform.eulerAngles;
+        //rX = curRot.x;
+        //rY = curRot.y;
+        print($"{rX} / {rY}");
         
     }
 
     // Update is called once per frame
-    void LateUpdate()
+    void Update()
     {
         float xInput = Input.GetAxis("Mouse X");
         float yInput = Input.GetAxis("Mouse Y");
@@ -25,7 +33,7 @@ public class RotateCamera : MonoBehaviour
         // float scroll = Input.GetAxis("Mouse ScrollWheel");
         // print(scroll);
 
-        print($"{rX} / {rY}");
+        // print($"{rX} / {rY}");
 
         rX += xInput * rotSpeed * Time.deltaTime;
         rY += yInput * rotSpeed * Time.deltaTime;
