@@ -35,17 +35,44 @@ public class Gun : MonoBehaviour
             RaycastHit hitInfo;
             if (Physics.Raycast(ray, out hitInfo, 30f))
             {
+                // bulletImpact.transform.position = Vector3.Reflect(Camera.main.transform.position, hitInfo.normal);
+                
                 bulletImpact.transform.position = hitInfo.point;
+                // bulletImpact.transform.forward = Vector3.Reflect(transform.position, hitInfo.normal);
                 bulletImpact.transform.forward = hitInfo.normal;
+
+                // hitInfo.normal 이 법선벡터, Vector3.Reflect(originalObject.position, hitInfo.normal) 이 반사각!
+                // 반사각은?
                 // reflectedObject.position = Vector3.Reflect(originalObject.position, Vector3.right);
+                // public Transform target;
+
+                // // prints "close" if the z-axis of this transform looks
+                // // almost towards the target
+
+                // void Update()
+                //{
+                //    Vector3 targetDir = target.position - transform.position;
+                //    float angle = Vector3.Angle(targetDir, transform.forward);
+                //    if (angle < 5.0f)
+                //        print("close");
+                //}
 
                 print(hitInfo.normal);
+
                 for (int i = 0; i < bulletImpactParticleSystem.Length; i++)
                 {
                     // bulletImpact.transform.LookAt(Camera.main.transform);
                     bulletImpactParticleSystem[i].Stop();
                     bulletImpactParticleSystem[i].Play();
                 }
+
+                if (hitInfo.transform.name.Contains("Enemy"))
+                {
+                    Destroy(hitInfo.transform.gameObject);
+                }
+                // 만약 부딛힌 게임오브젝트의 이름에 Enemy 가 포함되어 있다면,
+                // 파괴하고 싶다.
+
 
                 print(bulletImpactParticleSystem.Length);
 

@@ -73,8 +73,13 @@ public class MovePlayer : MonoBehaviour
         
         Vector3 dir = new Vector3(x, 0f, z);
         // 카메라를 기준으로 이동하고 싶다.
+        // dir = Camera.main.transform.TransformDirection(dir);
+        
         dir = Camera.main.transform.TransformDirection(dir); // dir 을 카메라를 기준으로 바꿔준다.
-
+        dir.y = 0;
+        // 카메라를 기준으로 방향을 바꾸면 Y값이 0 이 아니라서 정규화 할 때 X, Z 의 크기가 줄어듬.
+        // 그래서 위 아래로 바라보면서 움직이는 경우 속도가 줄어듬.
+        // 그리하여 Y를 0으로 하고 정규화 한다.
         dir.Normalize();
         dir *= speed;
         dir.y = velocityY;
