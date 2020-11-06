@@ -35,6 +35,8 @@ public class Gun : MonoBehaviour
             RaycastHit hitInfo;
             if (Physics.Raycast(ray, out hitInfo, 30f))
             {
+                
+                
                 // bulletImpact.transform.position = Vector3.Reflect(Camera.main.transform.position, hitInfo.normal);
                 
                 bulletImpact.transform.position = hitInfo.point;

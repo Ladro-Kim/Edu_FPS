@@ -22,7 +22,7 @@ public class Slerp : MonoBehaviour
         s = ac.Evaluate(Time.time);
 
         transform.position = Vector3.Slerp(transform.position, destPos, t);
-        transform.rotation = Quaternion.Lerp(Quaternion.EulerAngles(0, 0, 0), Quaternion.LookRotation(destPos), s);
+        // transform.rotation = Quaternion.Lerp(Quaternion.EulerAngles(0, 0, 0), Quaternion.LookRotation(destPos), s);
         
     }
 }
