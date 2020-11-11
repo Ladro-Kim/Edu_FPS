@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 // 길찾기 기능(Navigation Mesh Agent)을 이용해서 목적지를 향해 이동하고 싶다.
 // - 이동속력
@@ -18,6 +19,25 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
+    // 만약 hp 가 0이 되면 넘어지고 파괴하게 하고싶다.
+    public float curHp;
+    public float maxHp = 3;
+    public Slider sliderHp;
+
+    public float HP
+    {
+        get
+        {
+            return curHp;
+        }
+        set
+        {
+            curHp = value;
+            sliderHp.value = curHp;
+        }
+    }
+
+
     public Define.State _state;
 
     float speed = 3.5f;
@@ -27,14 +47,19 @@ public class Enemy : MonoBehaviour
 
     GameObject barbarian;
 
-    Animator animator;
+    public Animator animator;
+
+    public bool isStop;
 
     // Start is called before the first frame update
     void Start()
     {
+        // maxValue 만들고 시작하기.
+        sliderHp.maxValue = maxHp;
+        HP = maxHp;
 
         barbarian = transform.Find("Barbarian").gameObject;
-        animator = barbarian.GetComponent<Animator>();
+        // animator = barbarian.GetComponent<Animator>();
 
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.speed = speed;
@@ -51,6 +76,8 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        sliderHp.transform.LookAt(target);
+
         switch (_state)
         {
             case Define.State.Idle:
@@ -62,9 +89,12 @@ public class Enemy : MonoBehaviour
             case Define.State.Attack:
                 UpdateAttack();
                 break;
+            case Define.State.Stunned:
+                break;
             default:
                 break;
         }
+        // isStop = navMeshAgent.isStopped;
 
         //if (Input.GetKeyDown(KeyCode.Alpha1))
         //{
@@ -93,14 +123,16 @@ public class Enemy : MonoBehaviour
     private void UpdateIdle()
     {
         // 타깃을 검색해서 있으면 이동상태로 전이하고 싶다.
-        
         target = GameObject.Find("Player").transform;
+        print(target);
         if (target != null)
         {
             navMeshAgent.SetDestination(target.position); // navMeshAgent.destination = target.position;
-            _state = Define.State.Walk;
-            navMeshAgent.isStopped = false;
-            animator.CrossFade("Walk", 0.5f, 0);
+            SetState(Define.State.Walk);
+            //_state = Define.State.Walk;
+            //navMeshAgent.isStopped = false;
+            //animator.SetTrigger("Walk");
+            // animator.CrossFade("Walk", 0.5f, 0);
         }
     }
 
@@ -109,9 +141,11 @@ public class Enemy : MonoBehaviour
         navMeshAgent.SetDestination(target.position); // navMeshAgent.destination = target.position;
         if (Vector3.Distance(transform.position, target.transform.position) <= navMeshAgent.stoppingDistance)
         {
-            _state = Define.State.Attack;
-            navMeshAgent.isStopped = true;
-            animator.CrossFade("Attack", 0.5f, 0);
+            SetState(Define.State.Attack);
+            //_state = Define.State.Attack;
+            //navMeshAgent.isStopped = true;
+            //animator.SetTrigger("Attack");
+            // animator.CrossFade("Attack", 0.5f, 0);
         }
 
         // 1번만 해야하는 일, 계속 해야하는 일을 잘 구현할 것. (될 수 있으면 조건문을 사용해서...
@@ -120,13 +154,115 @@ public class Enemy : MonoBehaviour
 
     private void UpdateAttack()
     {
-        if (Vector3.Distance(transform.position, target.transform.position) >= navMeshAgent.stoppingDistance)
-        {
-            _state = Define.State.Walk;
-            navMeshAgent.isStopped = false;
-            animator.CrossFade("Walk", 0.5f, 0);
-        }
+        //if (Vector3.Distance(transform.position, target.transform.position) >= navMeshAgent.stoppingDistance)
+        //{
+        //    _state = Define.State.Walk;
+        //    navMeshAgent.isStopped = false;
+        //    animator.SetTrigger("Walk");
+        //    // animator.CrossFade("Walk", 0.5f, 0);
+        //}
     }
+
+    internal void DoStunned()
+    {
+        // 체력을 1씩 감소시키고 싶다.
+        // 체력이 0이 되면, 넘어지는 상태로 전이.
+        // 체력이 0이면 즉시 함수를 종료.
+        if (HP <= 0)
+        {
+            return;
+        }
+        
+        HP--;
+
+        if (HP <= 0)
+        {
+            SetState(Define.State.Stunned);
+        }
+        //// 넘어지는 상태로 전이하고 싶다.
+        //_state = Define.State.Stunned;
+        //// 이동도 멈추고 싶다.
+        //navMeshAgent.isStopped = true;
+        //// 애니메이션도 넘어지는 애니메이션을 실행하고 싶다.
+        //animator.SetTrigger("Stunned");
+    }
+
+    void SetState (Define.State next)
+    {
+        // 상태를 다음상태로 변경하고,
+        _state = next;
+
+        // 걸을 수 있는지 처리하고
+        if (next == Define.State.Walk)
+        {
+            navMeshAgent.isStopped = false;
+        }
+        else
+        {
+            navMeshAgent.isStopped = true;
+        }
+
+        // 애니메이션 변경
+        animator.SetTrigger(next.ToString());
+
+    }
+
+
+
+
+
+
+    // 공격 Hit되는 순간의 이벤트를 받고싶다.
+    public void OnHit()
+    {
+        // 타겟에게 데미지를 입힌다.
+        if (Vector3.Distance(transform.position, target.transform.position) <= navMeshAgent.stoppingDistance)
+        {
+            print("OnHit");
+        }
+
+
+    }
+    // 공격 애니메이션이 끝나는 순간의 이벤트를 받고싶다.
+    public void OnFinishAttack()
+    {
+        // Destroy(gameObject, 1.5f);
+    }
+
+
+
+    // 공격 애니메이션이 끝나는 순간의 이벤트를 받고싶다.
+    //public void OnFinishAttackBackup()
+    //{
+    //    print("OnFinishAttack");
+    //    // 타겟이 유효 공격범위 내에 있지 않다면 Walk 상태로 전이.
+    //    // 살아있는 타겟이 유효 공격범위 내에 있으면 공격상태로.
+    //    //
+    //    if (Vector3.Distance(transform.position, target.transform.position) >= navMeshAgent.stoppingDistance)
+    //    {
+    //        _state = Define.State.Walk;
+    //        navMeshAgent.isStopped = false;
+    //        // animator.CrossFade("Walk", 0.5f, 0);
+    //        animator.SetTrigger("Idle");
+    //    }
+    //}
+
+    void OnFinishStunned()
+    {   
+        if (Vector3.Distance(transform.position, target.transform.position) <= navMeshAgent.stoppingDistance) {
+            _state = Define.State.Walk;
+        }
+        else
+        {
+            _state = Define.State.Idle;
+        }
+
+        // Destroy(gameObject, 1.5f);
+        // 만약 목적지와의 거리가 공격가능한 거리라면 공격,
+        // 그렇지 않다면 이동상태로 전이
+    }
+
+
 
 
 

@@ -8,7 +8,8 @@ public class Define
     {
         Idle,
         Walk,
-        Attack
+        Attack,
+        Stunned
     }
 
 }

@@ -11,10 +11,12 @@ public class Gun : MonoBehaviour
 {
     public GameObject bulletImpact;
     private ParticleSystem[] bulletImpactParticleSystem;
+    LineRenderer lr;
 
     // Start is called before the first frame update
     void Start()
     {
+        lr = GetComponent<LineRenderer>();
         // 태어날 때 파티클시스템을 가져오고 싶다.
         bulletImpactParticleSystem = bulletImpact.GetComponentsInChildren<ParticleSystem>();
     }
@@ -35,8 +37,7 @@ public class Gun : MonoBehaviour
             RaycastHit hitInfo;
             if (Physics.Raycast(ray, out hitInfo, 30f))
             {
-                
-                
+                StartCoroutine(DrawLine());
                 // bulletImpact.transform.position = Vector3.Reflect(Camera.main.transform.position, hitInfo.normal);
                 
                 bulletImpact.transform.position = hitInfo.point;
@@ -70,13 +71,13 @@ public class Gun : MonoBehaviour
 
                 if (hitInfo.transform.name.Contains("Enemy"))
                 {
-                    Destroy(hitInfo.transform.gameObject);
+                    Enemy enemy = hitInfo.transform.GetComponent<Enemy>();
+                    enemy.DoStunned();
+                    // enemy._state = Define.State.Stunned;
+                    // Destroy(hitInfo.transform.gameObject);
                 }
                 // 만약 부딛힌 게임오브젝트의 이름에 Enemy 가 포함되어 있다면,
                 // 파괴하고 싶다.
-
-
-                print(bulletImpactParticleSystem.Length);
 
                 Debug.DrawLine(Camera.main.transform.position, Camera.main.transform.forward * 30f, Color.red, 1f);
                 // Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * 30f, Color.red, 1f);
@@ -89,4 +90,13 @@ public class Gun : MonoBehaviour
         // 직선상으로 선만 그리고 레이는 입력 받았을 때 표현하는 것이 부하가 좀 적지 않을까...라는 생각...
         // 충돌인정을 받으려면 콜라이더가 있어야 함.
     }
+
+    IEnumerator DrawLine()
+    {
+        lr.enabled = true;
+        yield return new WaitForSeconds(0.2f);
+        lr.enabled = false;
+    }
+
+
 }

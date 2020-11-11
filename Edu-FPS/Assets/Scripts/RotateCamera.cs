@@ -20,7 +20,7 @@ public class RotateCamera : MonoBehaviour
         //Vector3 curRot = transform.eulerAngles;
         //rX = curRot.x;
         //rY = curRot.y;
-        print($"{rX} / {rY}");
+        // print($"{rX} / {rY}");
         
     }
 
