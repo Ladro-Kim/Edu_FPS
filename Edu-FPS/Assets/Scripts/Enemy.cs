@@ -62,6 +62,8 @@ public class Enemy : MonoBehaviour
         // animator = barbarian.GetComponent<Animator>();
 
         navMeshAgent = GetComponent<NavMeshAgent>();
+        // agent.Warp(transform.position); 간헐적으로 안되는 경우가 많이 있어서 이렇게 하는 경우가 많음.
+        // Warp : 현재위치와 가장 가까운 navMesh 위치로 올라감.
         navMeshAgent.speed = speed;
 
         // 상태를 바꿀 때 뭔가를 같이 수정해준다.
@@ -76,7 +78,7 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        sliderHp.transform.LookAt(target);
+        // sliderHp.transform.LookAt(target);
 
         switch (_state)
         {
@@ -257,7 +259,7 @@ public class Enemy : MonoBehaviour
             _state = Define.State.Idle;
         }
 
-        // Destroy(gameObject, 1.5f);
+        Destroy(gameObject, 0.5f);
         // 만약 목적지와의 거리가 공격가능한 거리라면 공격,
         // 그렇지 않다면 이동상태로 전이
     }

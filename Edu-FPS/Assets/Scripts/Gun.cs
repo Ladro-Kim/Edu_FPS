@@ -10,6 +10,7 @@ using UnityEngine;
 public class Gun : MonoBehaviour
 {
     public GameObject bulletImpact;
+    public GameObject bulletPoint;
     private ParticleSystem[] bulletImpactParticleSystem;
     LineRenderer lr;
 
@@ -33,11 +34,12 @@ public class Gun : MonoBehaviour
         // 7. 3초 뒤 총알자국 삭제.
         if (Input.GetButtonDown("Fire1"))
         {
+            print(bulletPoint.transform.position);
             Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
             RaycastHit hitInfo;
-            if (Physics.Raycast(ray, out hitInfo, 30f))
+            if (Physics.Raycast(ray, out hitInfo))
             {
-                StartCoroutine(DrawLine());
+
                 // bulletImpact.transform.position = Vector3.Reflect(Camera.main.transform.position, hitInfo.normal);
                 
                 bulletImpact.transform.position = hitInfo.point;
@@ -60,8 +62,6 @@ public class Gun : MonoBehaviour
                 //        print("close");
                 //}
 
-                print(hitInfo.normal);
-
                 for (int i = 0; i < bulletImpactParticleSystem.Length; i++)
                 {
                     // bulletImpact.transform.LookAt(Camera.main.transform);
@@ -76,10 +76,11 @@ public class Gun : MonoBehaviour
                     // enemy._state = Define.State.Stunned;
                     // Destroy(hitInfo.transform.gameObject);
                 }
+                StartCoroutine(DrawLine(hitInfo.transform.position));
                 // 만약 부딛힌 게임오브젝트의 이름에 Enemy 가 포함되어 있다면,
                 // 파괴하고 싶다.
 
-                Debug.DrawLine(Camera.main.transform.position, Camera.main.transform.forward * 30f, Color.red, 1f);
+                // Debug.DrawLine(Camera.main.transform.position, Camera.main.transform.forward * 100f, Color.red, 1f);
                 // Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * 30f, Color.red, 1f);
                 // print($"{hitInfo.point} / {hitInfo.transform.name}");
             }
@@ -91,10 +92,14 @@ public class Gun : MonoBehaviour
         // 충돌인정을 받으려면 콜라이더가 있어야 함.
     }
 
-    IEnumerator DrawLine()
+    IEnumerator DrawLine(Vector3 hitPoint)
     {
+        lr.SetPosition(0, bulletPoint.transform.position);
+        print(bulletPoint.transform.position);
+        // lr.SetPosition(0, Camera.main.transform.position);
+        lr.SetPosition(1, hitPoint);
         lr.enabled = true;
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.01f);
         lr.enabled = false;
     }
 
