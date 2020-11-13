@@ -9,6 +9,13 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour
 {
+    enum GunType
+    {
+        Rifle,
+        Snifer
+    }
+
+
     public GameObject bulletImpact;
     public GameObject bulletPoint;
     private ParticleSystem[] bulletImpactParticleSystem;
@@ -17,6 +24,10 @@ public class Gun : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        zoomFOV = 10;
+        normalFOV = 50;
+        fovTarget = 60;
+        zoomSpeed = 9f;
         lr = GetComponent<LineRenderer>();
         // 태어날 때 파티클시스템을 가져오고 싶다.
         bulletImpactParticleSystem = bulletImpact.GetComponentsInChildren<ParticleSystem>();
@@ -25,6 +36,10 @@ public class Gun : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Zoom();
+        Shot();
+
+
         // 1. 시선을 만들고
         // 2. 담을 곳의 정보를 담는 변수를 만든다.
         // 3. 바라보고 싶다.
@@ -72,7 +87,7 @@ public class Gun : MonoBehaviour
                 if (hitInfo.transform.name.Contains("Enemy"))
                 {
                     Enemy enemy = hitInfo.transform.GetComponent<Enemy>();
-                    enemy.DoStunned();
+                    enemy.DoDamage(1);
                     // enemy._state = Define.State.Stunned;
                     // Destroy(hitInfo.transform.gameObject);
                 }
@@ -102,6 +117,32 @@ public class Gun : MonoBehaviour
         yield return new WaitForSeconds(0.01f);
         lr.enabled = false;
     }
+
+    void Shot()
+    {
+
+    }
+
+    public float zoomFOV = 10;
+    public float normalFOV = 50;
+    public float zoomSpeed = 1;
+    float fovTarget;
+
+    void Zoom()
+    {
+        // float target = Camera.main.fieldOfView; 주소를 가져오는게 아니고 값을 가져오는거라서 안되는 것으로 판단됨.
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            fovTarget = zoomFOV;
+        }
+        if (Input.GetMouseButtonUp(1))
+        {
+            fovTarget = normalFOV;
+        }
+        Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, fovTarget, zoomSpeed * Time.deltaTime);
+    }
+
 
 
 }

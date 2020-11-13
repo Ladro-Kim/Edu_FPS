@@ -55,7 +55,6 @@ public class EnemyManager : MonoBehaviour
             GameObject tempEnemy = Instantiate(enemyPref);
             tempEnemy.transform.position = GetSpawnPosition();
             tempEnemy.transform.forward = transform.forward;
-            print(transform.position);
             currentTime = 0;
         }
     }

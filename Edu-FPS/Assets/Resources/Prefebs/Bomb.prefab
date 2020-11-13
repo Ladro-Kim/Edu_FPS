@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4692425218718591074}
   - component: {fileID: 2147598165907639889}
   - component: {fileID: 8116341158221050441}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 1193457338500137196}
   - component: {fileID: 9189644953455264757}
   - component: {fileID: 4300174195008804102}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Bomb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -119,7 +119,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6731992559136589862}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0.073035486, y: -0.34969175, z: -0.027355986, w: 0.933613}
   m_LocalPosition: {x: 0, y: 1.61, z: -6.55}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -168,3 +168,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95953e78dbda93c41a23d03be1dd9724, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 10
+  power: 10
+  explosionRadius: 3

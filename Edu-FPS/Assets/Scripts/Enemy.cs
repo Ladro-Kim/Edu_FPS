@@ -34,6 +34,7 @@ public class Enemy : MonoBehaviour
         {
             curHp = value;
             sliderHp.value = curHp;
+            
         }
     }
 
@@ -43,7 +44,7 @@ public class Enemy : MonoBehaviour
     float speed = 3.5f;
     NavMeshAgent navMeshAgent;
 
-    Transform target;
+    PlayerHp target;
 
     GameObject barbarian;
 
@@ -125,11 +126,10 @@ public class Enemy : MonoBehaviour
     private void UpdateIdle()
     {
         // 타깃을 검색해서 있으면 이동상태로 전이하고 싶다.
-        target = GameObject.Find("Player").transform;
-        print(target);
+        target = GameObject.FindObjectOfType<PlayerHp>();
         if (target != null)
         {
-            navMeshAgent.SetDestination(target.position); // navMeshAgent.destination = target.position;
+            navMeshAgent.SetDestination(target.transform.position); // navMeshAgent.destination = target.position;
             SetState(Define.State.Walk);
             //_state = Define.State.Walk;
             //navMeshAgent.isStopped = false;
@@ -140,7 +140,7 @@ public class Enemy : MonoBehaviour
 
     private void UpdateWalk()
     {
-        navMeshAgent.SetDestination(target.position); // navMeshAgent.destination = target.position;
+        navMeshAgent.SetDestination(target.transform.position); // navMeshAgent.destination = target.position;
         if (Vector3.Distance(transform.position, target.transform.position) <= navMeshAgent.stoppingDistance)
         {
             SetState(Define.State.Attack);
@@ -165,7 +165,7 @@ public class Enemy : MonoBehaviour
         //}
     }
 
-    internal void DoStunned()
+    internal void DoDamage(int damage = 1) // 매개변수 입력 안하는 경우, Default 값으로 1 이 들어감.
     {
         // 체력을 1씩 감소시키고 싶다.
         // 체력이 0이 되면, 넘어지는 상태로 전이.
@@ -175,7 +175,7 @@ public class Enemy : MonoBehaviour
             return;
         }
         
-        HP--;
+        HP -= damage;
 
         if (HP <= 0)
         {
@@ -220,6 +220,7 @@ public class Enemy : MonoBehaviour
         // 타겟에게 데미지를 입힌다.
         if (Vector3.Distance(transform.position, target.transform.position) <= navMeshAgent.stoppingDistance)
         {
+            target.OnDamaged();
             print("OnHit");
         }
 
