@@ -252,20 +252,25 @@ public class Enemy : MonoBehaviour
 
     void OnFinishStunned()
     {   
-        if (Vector3.Distance(transform.position, target.transform.position) <= navMeshAgent.stoppingDistance) {
-            _state = Define.State.Walk;
-        }
-        else
-        {
-            _state = Define.State.Idle;
-        }
+        //if (Vector3.Distance(transform.position, target.transform.position) <= navMeshAgent.stoppingDistance) {
+        //    _state = Define.State.Walk;
+        //}
+        //else
+        //{
+        //    _state = Define.State.Idle;
+        //}
 
-        Destroy(gameObject, 0.5f);
+        ScoreManager.instance.SCORE++;
+
+        Destroy(gameObject);
         // 만약 목적지와의 거리가 공격가능한 거리라면 공격,
         // 그렇지 않다면 이동상태로 전이
     }
 
-
+    private void OnApplicationQuit()
+    {
+        // 종료 직전에 호출되는 내용.
+    }
 
 
 

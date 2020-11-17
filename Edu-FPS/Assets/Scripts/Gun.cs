@@ -49,7 +49,6 @@ public class Gun : MonoBehaviour
         // 7. 3초 뒤 총알자국 삭제.
         if (Input.GetButtonDown("Fire1"))
         {
-            print(bulletPoint.transform.position);
             Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
             RaycastHit hitInfo;
             if (Physics.Raycast(ray, out hitInfo))

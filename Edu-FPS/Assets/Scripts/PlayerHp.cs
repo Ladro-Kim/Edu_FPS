@@ -1,18 +1,47 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 // 플레이어의 체력을 관리하고 싶다.
 // 플레이어가 데미지를 입는 처리를 하고싶다.(번쩍)
 
+// - 최대체력
+// - 현재체력
+// - 체력UI
+
+
 public class PlayerHp : MonoBehaviour
 {
+    int curHp;
+    int HP
+    {
+        get
+        {
+            return curHp;
+        }
+        set
+        {
+            // UI 를 갱신하고 싶다.
+            curHp = value;
+            for(int i = 0; i < hpUI.Length; i++)
+            {
+                hpUI[i].SetActive(curHp > i);
+            }
+        }
+    }
+    public int maxHp;
+
+    public GameObject[] hpUI;
+
     public GameObject hitUI;
-    int hp;
 
     // Start is called before the first frame update
     void Start()
     {
+        maxHp = hpUI.Length;
+        HP = maxHp;
+
         hitUI.SetActive(false);
     }
 
@@ -24,6 +53,7 @@ public class PlayerHp : MonoBehaviour
 
     public void OnDamaged()
     {
+        HP--;
         StopCoroutine(iePunch());
         StartCoroutine(iePunch());
     }
