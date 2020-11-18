@@ -9,9 +9,20 @@ using Random = UnityEngine.Random;
 // - 현재시간
 // - 에너미 프리펩
 
+// 적의 생성 수는 레벨의 값이 되게 하고싶다.
+// 레벨업하면 생성수도 초기화 되어야 한다.
+// - 생성 횟수
+
 
 public class EnemyManager : MonoBehaviour
 {
+    //public static EnemyManager instance;
+
+    //private void Awake()
+    //{
+    //    instance = this;
+    //}
+
     public GameObject enemyPref;
 
     // Random Time.
@@ -20,10 +31,20 @@ public class EnemyManager : MonoBehaviour
     public float spawnTime = 2f;
     float currentTime = 0;
 
+    public int createCount = 0;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        ScoreManager.instance.initValue = () =>
+        {
+            createCount = 0;
+        }; // 무명함수(람다식)
+
+        // ScoreManager.instance.initValue = ResetCreateCount;  단일구독 신청
+        // ScoreManager.instance.initValue += ResetCreateCount; 추가구독(복수) 신청
+
         enemyPref = (GameObject) Resources.Load("Prefebs/Enemy");
         if (enemyPref == null)
         {
@@ -52,10 +73,16 @@ public class EnemyManager : MonoBehaviour
         currentTime += Time.deltaTime;
         if (currentTime > spawnTime && enemyPref != null)
         {
-            GameObject tempEnemy = Instantiate(enemyPref);
-            tempEnemy.transform.position = GetSpawnPosition();
-            tempEnemy.transform.forward = transform.forward;
+            // 만약에 생성횟수가 레벨보다 작다면...
             currentTime = 0;
+            if (createCount < ScoreManager.instance.LEVEL)
+            {
+                // ScoreManager.instance.levelUp += ResetCreateCount;
+                createCount++;
+                GameObject tempEnemy = Instantiate(enemyPref);
+                tempEnemy.transform.position = GetSpawnPosition();
+                tempEnemy.transform.forward = transform.forward;
+            }
         }
     }
 
@@ -92,4 +119,10 @@ public class EnemyManager : MonoBehaviour
         return hit.point;
 
     }
+
+    //public void ResetCreateCount()
+    //{
+    //    createCount = 0;
+    //}
+
 }

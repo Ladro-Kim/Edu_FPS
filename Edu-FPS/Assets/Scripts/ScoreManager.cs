@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,6 +24,11 @@ using UnityEngine.UI;
 public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager instance;
+
+    public delegate void dInitValue();
+    public dInitValue initValue;
+
+    // public Action<int> initValue;
 
     int level = 0;
     public int LEVEL
@@ -50,7 +56,6 @@ public class ScoreManager : MonoBehaviour
             killCount = value;
             slider_exp.value = killCount;
             text_percent.text = $"{((killCount / (float)LEVEL) * 100.0f).ToString("N3")}%";
-            print((killCount / (float)LEVEL) * 100.0f);
         }
     }
 
@@ -79,8 +84,18 @@ public class ScoreManager : MonoBehaviour
                 if (killCount == LEVEL)
                 {
                     LEVEL++;
-                    StopCoroutine(LEVEL_UP());
-                    StartCoroutine(LEVEL_UP());
+
+                    if (initValue != null)
+                    {
+                        initValue();
+                    }
+
+                    // levelUp.Invoke();
+                    // EnemyManager.instance.createCount = 0;
+                    //StopCoroutine(ieLEVEL_UP());
+                    //StartCoroutine(ieLEVEL_UP());
+                    Invoke("InitExpUI", 1f); // 일정시간 뒤에 함수를 호출해라. 자기자신을 호출하는, 재귀함수.
+                    // 인보크를 쓸꺼면 인보크를, 코루틴을 쓸꺼면 코루틴을 사용할 것. 1가지 중심으로!
                 }
             }
 
@@ -95,13 +110,20 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
-    IEnumerator LEVEL_UP()
+    void InitExpUI()
     {
-        yield return new WaitForSeconds(1f);
         KILLCOUNT = 0;
         slider_exp.maxValue = LEVEL;
-
     }
+
+
+    //IEnumerator ieLEVEL_UP()
+    //{
+    //    yield return new WaitForSeconds(1f);
+    //    KILLCOUNT = 0;
+    //    slider_exp.maxValue = LEVEL;
+
+    //}
 
 
     void Start()

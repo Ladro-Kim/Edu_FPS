@@ -109,7 +109,6 @@ public class Gun : MonoBehaviour
     IEnumerator DrawLine(Vector3 hitPoint)
     {
         lr.SetPosition(0, bulletPoint.transform.position);
-        print(bulletPoint.transform.position);
         // lr.SetPosition(0, Camera.main.transform.position);
         lr.SetPosition(1, hitPoint);
         lr.enabled = true;

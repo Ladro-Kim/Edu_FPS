@@ -28,6 +28,16 @@ public class PlayerHp : MonoBehaviour
             {
                 hpUI[i].SetActive(curHp > i);
             }
+
+            if (curHp <= 0)
+            {
+                GameManager.instance.UI_gameOver.SetActive(true);
+                // Time.timeScale = 0; // 시간정지.
+                // ex) 다른물체는 느리고 나만 빠르고 싶을 때 : Time.unScaledDeltaTime 을 곱하면 됨.
+                // Time.deltaTime = Time.unScaledDeltaTime * Time.timeScale; 
+                
+            }
+
         }
     }
     public int maxHp;
@@ -43,6 +53,7 @@ public class PlayerHp : MonoBehaviour
         HP = maxHp;
 
         hitUI.SetActive(false);
+
     }
 
     // Update is called once per frame
