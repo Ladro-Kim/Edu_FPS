@@ -68,10 +68,10 @@ public class MovePlayer : MonoBehaviour
 
         // 카메라의 좌표에서 앞뒤좌우로 이동하고 싶다.
 
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
+        float xInput = Input.GetAxis("Horizontal");
+        float zInput = Input.GetAxis("Vertical");
         
-        Vector3 dir = new Vector3(x, 0f, z);
+        Vector3 dir = new Vector3(xInput, 0f, zInput);
         // 카메라를 기준으로 이동하고 싶다.
         // dir = Camera.main.transform.TransformDirection(dir);
         

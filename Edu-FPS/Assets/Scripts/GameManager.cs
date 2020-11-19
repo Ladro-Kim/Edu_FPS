@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        Application.targetFrameRate = 240;
         UI_gameOver.SetActive(false);
     }
 
